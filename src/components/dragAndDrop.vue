@@ -148,6 +148,9 @@
     display: flex;
 }
 
+.AllMaterias {
+    margin-bottom: 20px;
+}
 
 .column {
     flex-basis: calc(33.33% - 20px);
@@ -198,6 +201,12 @@
     animation: slideIn 0.5s ease forwards;
 }
 
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
 .bloque-anahuac {
     background-color: #FF5733;
     /* Naranja */
@@ -224,7 +233,9 @@
 
 .materia {
     width: auto;
-    height: 100px;
+    flex-direction: column;
+    align-items: center;
+    height: auto;
     display: flex;
     border: 1px solid rgb(255, 255, 255);
     background-color: #f9f9f9;
@@ -257,7 +268,7 @@
     cursor: pointer;
     margin-bottom: 20px;
     margin-left: 10px;
-    transition: 0.3s;
+    
 }
 
 .boton:hover {

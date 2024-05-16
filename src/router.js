@@ -3,13 +3,15 @@ import Inicio from './components/Inicio.vue';
 import Principal from './components/Principal.vue';
 import Materias from './components/materias.vue';
 import DragAndDrop from './components/dragAndDrop.vue';
+import TopSort  from './components/TopSort.vue';
 
 const routes = [
   { path: '/', redirect: '/inicio' }, 
   { path: '/inicio', name: 'inicio', component: Inicio },
   { path: '/principal', name: 'principal', component: Principal }, 
   { path: '/materias', name: 'materias', component: Materias},
-  { parh: '/dragAndDrop', name: 'dragAndDrop', component: DragAndDrop},
+  { path: '/dragAndDrop', name: 'dragAndDrop', component: DragAndDrop},
+  {path: '/TopSort', name: 'TopSort', component: TopSort},
 
 ];
 
