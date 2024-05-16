@@ -11,7 +11,7 @@ import TopSort from './components/TopSort.vue';
 export default {
   name: 'App',
   components: {
-    TopSort
+    //TopSort
   }
 };
 </script>
