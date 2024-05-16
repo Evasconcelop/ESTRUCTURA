@@ -13,12 +13,21 @@
         </div>
     </div>
     <div class="materia" @dragover.prevent @drop="dropToMateria">
-        <h2 class="titulo">Materias</h2>
-        <div class="card" v-for="(card, index) in droppedCards" :key="index" :class="card.type" draggable="true"
-            @dragstart="dragStartGeneral(index)" @dragend="dragEnd">
+        <h2 class="AllMaterias">Materias</h2>
+        <div class="cards-container">
+          <div
+            class="card"
+            v-for="(card, index) in droppedCards"
+            :key="index"
+            :class="card.type"
+            draggable="true"
+            @dragstart="dragStartGeneral(index)"
+            @dragend="dragEnd"
+          >
             {{ card.name }}
+          </div>
         </div>
-    </div>
+      </div>
     <div class="botones-container">
         <button @click="addSemester" class="boton">Agregar Semestre</button>
         <button @click="removeSemester" class="boton">Eliminar Semestre</button>
@@ -34,9 +43,27 @@ import Swal from "sweetalert2";
 export default {
     setup() {
         const initialCardsAnahuac = [
-            { name: "Liderazgo", type: "bloque-anahuac", credits: 3, prerequisites: [] },
-            { name: "Antropología Fundamental", type: "bloque-anahuac", credits: 3, prerequisites: ["Liderazgo"] },
-            { name: "Persona y Trascendencia", type: "bloque-anahuac", credits: 3, prerequisites: ["Antropología Fundamental"] },
+            { name: "Liderazgo Personal", 
+            type: "bloque-anahuac", credits: 3, 
+            prerequisites: [] },
+
+            { name: "Liderazgo en Equipos", 
+            type: "bloque-anahuac", credits: 3, 
+            prerequisites: ["Liderazgo Personal"] },
+
+            { name: "Ser Universitario", 
+            type: "bloque-anahuac", credits: 3, 
+            prerequisites: [] },
+
+            { name: "Antropología", 
+            type: "bloque-anahuac", credits: 3, 
+            prerequisites: ["Ser Universitario"] },
+
+            { name: "Persona y Trascendencia", 
+            type: "bloque-anahuac", credits: 3, 
+            prerequisites: ["Antropología"] },
+
+            
         ];
 
         const initialCardsProfesional = [
@@ -277,6 +304,9 @@ export default {
     display: flex;
 }
 
+.AllMaterias {
+    margin-bottom: 20px;
+}
 
 .column {
     flex-basis: calc(33.33% - 20px);
@@ -327,6 +357,12 @@ export default {
     animation: slideIn 0.5s ease forwards;
 }
 
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
 .bloque-anahuac {
     background-color: #FF5733;
     /* Naranja */
@@ -353,7 +389,9 @@ export default {
 
 .materia {
     width: auto;
-    height: 100px;
+    flex-direction: column;
+    align-items: center;
+    height: auto;
     display: flex;
     border: 1px solid rgb(255, 255, 255);
     background-color: #f9f9f9;
