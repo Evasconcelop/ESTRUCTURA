@@ -1,12 +1,19 @@
 <template>
   <div id="app">
     <router-view></router-view>
+    <TopSort />
   </div>
 </template>
 
 <script>
+import TopSort from './components/TopSort.vue';
+
 export default {
-}
+  name: 'App',
+  components: {
+    TopSort
+  }
+};
 </script>
 
 <style>
