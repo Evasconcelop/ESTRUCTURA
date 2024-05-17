@@ -3,38 +3,46 @@
         <topsort @selected-courses="handleSelectedCourses" />
         <!-- Contenedor para las fichas arrastradas -->
         <div class="column-container">
-        <div class="column" v-for="(column, columnIndex) in columns" :key="columnIndex" @dragover.prevent
-            @drop="dropToColumn($event, columnIndex)">
-            <h2 class="titulo">{{ column.name }}</h2>
-            <div class="card" v-for="(card, cardIndex) in column.cards" :key="cardIndex" :class="card.type"
-                draggable="true" @dragstart="dragStart(columnIndex, cardIndex)" @dragend="dragEnd">
+            <div class="column" v-for="(column, columnIndex) in columns" :key="columnIndex" @dragover.prevent @drop="dropToColumn($event, columnIndex)">
+                <h2 class="titulo">{{ column.name }}</h2>
+                <div class="card" v-for="(card, cardIndex) in column.cards" :key="cardIndex" :class="card.type" draggable="true" @dragstart="dragStart(columnIndex, cardIndex)" @dragend="dragEnd">
+                    {{ card.name }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="materia" @dragover.prevent @drop="dropToMateria">
+        <h2 class="AllMaterias">Materias</h2>
+        
+        <!-- Simbología de colores -->
+        <div class="legend">
+            <div class="legend-item">
+                <span class="legend-color bloque-anahuac"></span>
+                <span>Bloque Anahuac</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color bloque-profesional"></span>
+                <span>Bloque Profesional</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color bloque-interdisciplinario"></span>
+                <span>Bloque Interdisciplinario</span>
+            </div>
+        </div>
+
+        <div class="cards-container">
+            <div class="card" v-for="(card, index) in droppedCards" :key="index" :class="card.type" draggable="true" @dragstart="dragStartGeneral(index)" @dragend="dragEnd">
                 {{ card.name }}
             </div>
         </div>
-        </div>
     </div>
-    <div class="materia" @dragover.prevent @drop="dropToMateria">
-        <h2 class="AllMaterias">Materias</h2>
-        <div class="cards-container">
-          <div
-            class="card"
-            v-for="(card, index) in droppedCards"
-            :key="index"
-            :class="card.type"
-            draggable="true"
-            @dragstart="dragStartGeneral(index)"
-            @dragend="dragEnd"
-          >
-            {{ card.name }}
-          </div>
-        </div>
-      </div>
+
     <div class="botones-container">
         <button @click="addSemester" class="boton">Agregar Semestre</button>
         <button @click="removeSemester" class="boton">Eliminar Semestre</button>
         <button @click="calculatePlan" class="boton">Calcular Plan</button>
     </div>
-
 </template>
 
 <script>
@@ -44,27 +52,11 @@ import Swal from "sweetalert2";
 export default {
     setup() {
         const initialCardsAnahuac = [
-            { name: "Liderazgo Personal", 
-            type: "bloque-anahuac", credits: 3, 
-            prerequisites: [] },
-
-            { name: "Liderazgo en Equipos", 
-            type: "bloque-anahuac", credits: 3, 
-            prerequisites: ["Liderazgo Personal"] },
-
-            { name: "Ser Universitario", 
-            type: "bloque-anahuac", credits: 3, 
-            prerequisites: [] },
-
-            { name: "Antropología", 
-            type: "bloque-anahuac", credits: 3, 
-            prerequisites: ["Ser Universitario"] },
-
-            { name: "Persona y Trascendencia", 
-            type: "bloque-anahuac", credits: 3, 
-            prerequisites: ["Antropología"] },
-
-            
+            { name: "Liderazgo Personal", type: "bloque-anahuac", credits: 3, prerequisites: [] },
+            { name: "Liderazgo en Equipos", type: "bloque-anahuac", credits: 3, prerequisites: ["Liderazgo Personal"] },
+            { name: "Ser Universitario", type: "bloque-anahuac", credits: 3, prerequisites: [] },
+            { name: "Antropología", type: "bloque-anahuac", credits: 3, prerequisites: ["Ser Universitario"] },
+            { name: "Persona y Trascendencia", type: "bloque-anahuac", credits: 3, prerequisites: ["Antropología"] },
         ];
 
         const initialCardsProfesional = [
@@ -218,51 +210,59 @@ export default {
                 // Buscar el índice del semestre donde se encuentra la materia
                 const semesterIndex = findSemesterIndex(subject);
                 if (semesterIndex === -1) {
-                    planStatus.value = `Plan Erróneo: La materia "${subject}" no está en ningún semestre.`;
+                    planStatus.value = {
+                        valid: false,
+                        message: `La materia ${subject} no está en ningún semestre.`,
+                    };
                     Swal.fire({
                         icon: 'error',
-                        title: 'Oops...',
-                        text: planStatus.value = `Plan Erróneo: La materia "${subject}" no está en ningún semestre.`,
+                        title: 'Error en el Plan de Estudios',
+                        text: planStatus.value.message,
                     });
-                    break;
+                    return;
                 }
-                // Verificar si los prerequisitos se cumplen en semestres anteriores
+
+                // Verificar las materias que deben ser cursadas antes
                 for (const prerequisite of subjects[subject] || []) {
-                    const prereqSemesterIndex = findSemesterIndex(prerequisite);
-                    if (prereqSemesterIndex === -1 || prereqSemesterIndex >= semesterIndex) {
-                        planStatus.value = `Plan Erróneo: No puedes cursar "${subject}" sin haber tomado "${prerequisite}"`;
+                    const prerequisiteSemesterIndex = findSemesterIndex(prerequisite);
+                    if (prerequisiteSemesterIndex === -1 || prerequisiteSemesterIndex >= semesterIndex) {
+                        planStatus.value = {
+                            valid: false,
+                            message: `La materia ${subject} tiene la prerrequisito ${prerequisite} en un semestre posterior.`,
+                        };
                         Swal.fire({
                             icon: 'error',
-                            title: 'Oops...',
-                            text: planStatus.value = `Plan Erróneo: No puedes cursar "${subject}" sin haber tomado "${prerequisite}"`,
+                            title: 'Error en el Plan de Estudios',
+                            text: planStatus.value.message,
                         });
-                        break;
+                        return;
                     }
                 }
-                if (planStatus.value) {
-                    break;
-                }
             }
 
-            if (!planStatus.value) {
-                planStatus.value = "Plan Correcto: Puedes cursar todas las materias en el orden adecuado.";
-                Swal.fire({
-                    icon: 'success',
-                    title: '¡Genial!',
-                    text: 'Plan Correcto: Puedes cursar todas las materias en el orden adecuado.',
-                });
-            }
+            // Si no se encontraron errores
+            planStatus.value = {
+                valid: true,
+                message: 'El plan de estudios es válido.',
+            };
+            Swal.fire({
+                icon: 'success',
+                title: 'Plan de Estudios Válido',
+                text: planStatus.value.message,
+            });
         }
 
-        function findSemesterIndex(subjectName) {
-            // Busca el índice del semestre donde se encuentra la materia
+        function findSemesterIndex(subject) {
             for (let i = 0; i < columns.value.length; i++) {
-                const column = columns.value[i];
-                if (column.cards.some(card => card.name === subjectName)) {
-                    return i; // Retorna el índice del semestre donde se encuentra la materia
+                if (columns.value[i].cards.some(card => card.name === subject)) {
+                    return i;
                 }
             }
-            return -1; // Retorna -1 si la materia no está en ningún semestre
+            return -1;
+        }
+
+        function handleSelectedCourses(selectedCourses) {
+            droppedCards.value = selectedCourses;
         }
 
         return {
@@ -276,176 +276,101 @@ export default {
             addSemester,
             removeSemester,
             calculatePlan,
+            handleSelectedCourses,
             planStatus,
         };
     },
 };
 </script>
 
-
 <style scoped>
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-50px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.plan-status {
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-.flex {
+.column-container {
     display: flex;
-}
-
-.AllMaterias {
+    gap: 10px;
     margin-bottom: 20px;
 }
 
 .column {
-    flex-basis: calc(33.33% - 20px);
-    margin-bottom: 20px;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border: 1px solid #ffffff;
-    margin-right: 30px;
-    margin-top: 10px;
-    border-radius: 10px;
-    height: 500px;
-    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.541);
-    animation: slideIn 0.5s ease forwards;
-    
-}
-
-.column-container {
-    overflow-x: auto;
-    white-space: nowrap;
-    display: flex;
-    animation: slideIn 0.5s ease forwards;
-    margin-left: 10px;
-}
-
-
-.column-container::-webkit-scrollbar {
-    height: 10px;
-    background-color: transparent;
-}
-
-.column-container::-webkit-scrollbar-thumb {
-    background-color: #ffffff;
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
     border-radius: 4px;
+    background-color: #f9f9f9;
 }
 
-.column-container::-webkit-scrollbar-thumb:hover {
-    background-color: #999;
+.titulo {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
 .card {
-    width: 180px;
-    height: 50px;
+    padding: 10px;
     margin-bottom: 10px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.541);
-    animation: slideIn 0.5s ease forwards;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: grab;
+}
+
+.materia {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
 }
 
 .cards-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-  }
-
-.bloque-anahuac {
-    background-color: #FF5733;
-    /* Naranja */
-    color: rgb(255, 255, 255);
-    margin-left: 30px;
-    padding: 10px;
-}
-
-.bloque-profesional {
-    background-color: #3498DB;
-    /* Azul */
-    color: white;
-    margin-left: 30px;
-    padding: 10px;
-}
-
-.bloque-interdisciplinario {
-    background-color: #32bb26;
-    /* Verde */
-    color: white;
-    margin-left: 30px;
-    padding: 10px;
-}
-
-.materia {
-    width: auto;
-    flex-direction: column;
-    align-items: center;
-    height: auto;
-    display: flex;
-    border: 1px solid rgb(255, 255, 255);
-    background-color: #f9f9f9;
-    padding: 10px;
-    margin-right: 10px;
-    margin-left: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    justify-content: center;
-    margin-top: 30px;
-    margin-bottom: 30px;
-    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.541);
-    animation: slideIn 0.5s ease forwards;
-}
-
-.botones-container{
-    width: 600px;
-    height: 40px;
-    justify-content: center;
+    gap: 10px;
 }
 
 .boton {
     padding: 10px 20px;
-    font-size: 16px;
-    background-color: #3a1704;
-    color: white;
+    margin-right: 10px;
+    margin-top: 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #fff;
     cursor: pointer;
-    margin-bottom: 20px;
-    margin-left: 10px;
-    transition: 0.3s;
 }
 
 .boton:hover {
-    transform: scale(1.2);
-    margin-left: 40px;
-    margin-right: 40px;
-    background-color: black;
+    background-color: #0056b3;
 }
 
+/* Colores para las materias */
+.bloque-anahuac {
+    background-color: #ff8800;
+}
 
+.bloque-profesional {
+    background-color: #007bff;
+}
 
-@media (max-width: 768px) {
-    .bottom-button {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 90%;
-    }
+.bloque-interdisciplinario {
+    background-color: #28a745;
+}
+
+/* Estilos para la leyenda */
+.legend {
+    margin-bottom: 20px;
+    display: flex;
+    margin-left: 25%;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    margin-left: 5%;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    margin-right: 10px;
 }
 </style>
