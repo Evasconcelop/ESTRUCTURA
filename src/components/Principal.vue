@@ -6,7 +6,6 @@
       <p class="descripcion">Aquí podrás ver tu progreso en la carrera y realizar otras acciones.</p>
       <div class="botones-principales">
         <button class="boton-seleccionar" @click="redirectToSubjects">Seleccionar materias</button>
-        <button class="boton-agendar" @click="redirectToCitas">Agendar Cita</button>
       </div>
     </div>
 
@@ -23,6 +22,32 @@
         <div class="botones-container">
           <button @click="agregarComentario">Agregar</button>
           <button @click="sacarComentario">Eliminar Último Aviso</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenedor de citas -->
+    <div class="citas-container">
+      <div class="citas">
+        <h2>GESTIÓN DE CITAS</h2>
+        <ul v-if="!listaCitas.estaVacia()">
+          <li v-for="(cita, index) in listaCitas.items" :key="index">
+            <strong>{{ cita.director }}</strong>: {{ cita.motivo }} - {{ cita.estudiante }}
+          </li>
+        </ul>
+        <p v-else>No hay citas agendadas.</p>
+        <label for="directorCita">Director de carrera:</label>
+        <input type="text" id="directorCita" v-model="nuevoDirector">
+        
+        <label for="motivoCita">Motivo de la cita:</label>
+        <input type="text" id="motivoCita" v-model="nuevoMotivo">
+
+        <label for="estudianteCita">Estudiante:</label>
+        <input type="text" id="estudianteCita" v-model="nuevoEstudiante">
+        
+        <div class="botones-container">
+          <button @click="agregarCita">Agregar Cita</button>
+          <button @click="eliminarCita">Eliminar Última Cita</button>
         </div>
       </div>
     </div>
@@ -52,20 +77,42 @@ class Pila {
   }
 }
 
-// Componente Vue
+// Clase Lista para citas
+class Lista {
+  constructor() {
+    this.items = [];
+  }
+
+  agregarCita(cita) {
+    this.items.push(cita);
+  }
+
+  eliminarCita() {
+    if (this.items.length === 0) {
+      return null;
+    }
+    return this.items.pop();
+  }
+
+  estaVacia() {
+    return this.items.length === 0;
+  }
+}
+
 export default {
   data() {
     return {
       pilaComentarios: new Pila(),
-      nuevoComentario: ''
+      nuevoComentario: '',
+      listaCitas: new Lista(),
+      nuevoDirector: '',
+      nuevoMotivo: '',
+      nuevoEstudiante: ''
     };
   },
   methods: {
     redirectToSubjects() {
       this.$router.push('/materias'); 
-    },
-    redirectToCitas() {
-      this.$router.push('/citas'); 
     },
     agregarComentario() {
       if (this.nuevoComentario.trim() !== '') {
@@ -75,10 +122,27 @@ export default {
     },
     sacarComentario() {
       this.pilaComentarios.sacarComentario();
+    },
+    agregarCita() {
+      if (this.nuevoDirector.trim() !== '' && this.nuevoMotivo.trim() !== '' && this.nuevoEstudiante.trim() !== '') {
+        const nuevaCita = {
+          director: this.nuevoDirector,
+          motivo: this.nuevoMotivo,
+          estudiante: this.nuevoEstudiante
+        };
+        this.listaCitas.agregarCita(nuevaCita);
+        this.nuevoDirector = '';
+        this.nuevoMotivo = '';
+        this.nuevoEstudiante = ''; 
+      }
+    },
+    eliminarCita() {
+      this.listaCitas.eliminarCita();
     }
   }
 };
 </script>
+
 <style scoped>
 .career-and-subjects-container {
   display: flex;
@@ -124,39 +188,45 @@ button:hover {
   margin-bottom: 20px; /* Margen inferior solo para el botón "Seleccionar materias" */
 }
 
-.boton-agendar {
-  margin-top: 20px; /* Margen superior solo para el botón "Agendar Cita" */
-}
-
-.comentarios-container {
+.comentarios-container,
+.citas-container {
   width: 100%;
   margin-top: 20px;
 }
 
-.comentarios {
+.comentarios,
+.citas {
   padding: 20px;
   background-color: #f8f9fa;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
-.comentarios h2 {
+.comentarios h2,
+.citas h2 {
   font-size: 24px;
   margin-bottom: 10px;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
-.comentarios ul {
+.comentarios ul,
+.citas ul {
   list-style-type: none;
   padding-left: 0;
 }
 
-.comentarios li {
+.comentarios li,
+.citas li {
   margin-bottom: 5px;
 }
 
-.comentarios input[type="text"] {
-  margin-bottom: 10px;
+.comentarios input[type="text"],
+.citas input[type="text"] {
+  width: calc(100% - 40px);
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 .botones-container {
@@ -174,5 +244,11 @@ button:hover {
 
 .botones-container button:hover {
   background-color: #0056b3;
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
 }
 </style>

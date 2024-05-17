@@ -4,6 +4,7 @@ import Principal from './components/Principal.vue';
 import Materias from './components/materias.vue';
 import DragAndDrop from './components/dragAndDrop.vue';
 import TopSort  from './components/TopSort.vue';
+import Chatbot from './components/Chatbot.vue';
 
 const routes = [
   { path: '/', redirect: '/inicio' }, 
@@ -12,6 +13,7 @@ const routes = [
   { path: '/materias', name: 'materias', component: Materias},
   { path: '/dragAndDrop', name: 'dragAndDrop', component: DragAndDrop},
   {path: '/TopSort', name: 'TopSort', component: TopSort},
+  {path: '/Chatbot', name: 'Chatbot', component:Chatbot},
 
 ];
 
