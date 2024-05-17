@@ -1,43 +1,29 @@
 <template>
-  <div class="pagina-web">
-    <!-- Contenido principal -->
-    <main class="contenido">
-      <!-- Sección de bienvenida -->
-      <section id="inicio" class="bienvenida">
-        <h1 class="titulo">Bienvenido a Ingeniería</h1>
-        <p class="parrafo">Para poder consultar tu avance en la carrera, primero regístrate o inicia sesión.</p>
-        <button class="boton-iniciar" @click="toggleLoginForm">Iniciar Sesión</button>
-        <span class="espacio"></span> <!-- Espacio adicional -->
-        <button class="boton-registrarse" @click="toggleRegisterForm">Registrarse</button>
-      </section>
-
-      <!-- Formulario de inicio de sesión -->
-      <section id="iniciar-sesion" class="login-form" :class="{ active: showLoginForm }">
-        <h2 class="subtitulo">Iniciar Sesión</h2>
-        <!-- Formulario de inicio de sesión -->
-        <form @submit.prevent="enviarInicioSesion">
-          <input type="email" placeholder="Correo electrónico">
-          <input type="password" placeholder="Contraseña">
-          <button type="submit" class="boton-iniciar">Iniciar Sesión</button>
-        </form>
-      </section>
-
-      <!-- Formulario de registro -->
-      <section id="registro" class="login-form" :class="{ active: showRegisterForm }">
-        <h2 class="subtitulo">Registro</h2>
-        <form @submit.prevent="enviarRegistro">
-          <input type="text" placeholder="Nombre">
-          <input type="text" placeholder="Apellido">
-          <input type="email" placeholder="Correo electrónico">
-          <input type="text" placeholder="Carrera">
-          <input type="password" placeholder="Contraseña">
-          <button type="submit" class="boton-iniciar">Registrarse</button>
-        </form>
-      </section>
-
-      <!-- Secciones de comentarios, citas, etc. -->
-      <!-- ... -->
-    </main>
+  <div class="fondo">
+    <div class="container">
+      <div class="screen">
+        <div class="screen__content">
+          <form class="login">
+            <div class="login__field">
+              <h3 class="titulo">Bienvenido a ingeniería</h3>
+              <input type="text" class="login__input" placeholder="Correo">
+            </div>
+            <div class="login__field">
+              <input type="password" class="login__input" placeholder="contraseña">
+            </div>
+            <button class="button login__submit" @click="enviarInicioSesion">
+              <span class="button__text">Iniciar sesión</span>
+            </button>        
+          </form>
+        </div>
+        <div class="screen__background">
+          <span class="screen__background__shape screen__background__shape4"></span>
+          <span class="screen__background__shape screen__background__shape3"></span>    
+          <span class="screen__background__shape screen__background__shape2"></span>
+          <span class="screen__background__shape screen__background__shape1"></span>
+        </div>    
+      </div>
+    </div>
   </div>
 </template>
 
@@ -76,80 +62,191 @@ export default {
 </script>
 
 <style scoped>
-/* Estilos para el contenedor principal */
-.contenido {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start; /* Alineado a la izquierda */
-  padding-left: 20px; /* Espaciado en el lado izquierdo */
+@import url('https://fonts.googleapis.com/css?family=Raleway:800,700');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;  
+  font-family: Raleway, sans-serif;
 }
 
-.bienvenida {
-  /* Estilos para la sección de bienvenida */
-  text-align: left; /* Alineado a la izquierda */
-  color: white;
-  margin-bottom: 20px; /* Espaciado inferior */
+.fondo {
+  background-image: url('https://merida.anahuac.mx/hs-fs/hubfs/fondoi_instalaciones_explanada%20dia%201.jpeg?width=1920&height=1080&name=fondoi_instalaciones_explanada%20dia%201.jpeg');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+
 }
 
 .titulo {
-  font-size: 2.5em; /* Tamaño de fuente más grande */
+  transform: translateY(-30px);
+  font-size: 20px;
 }
 
-.parrafo {
-  margin-top: 15px; /* Espaciado superior */
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
 }
 
-.login-form {
-  /* Estilos para el formulario de inicio de sesión y registro */
-  display: none;
-  padding: 20px;
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 10px;
+.screen {    
+  background: linear-gradient(90deg, #eb7d23, #db6a0d);    
+  position: relative;  
+  height: 600px;
+  width: 360px;  
+  box-shadow: 0px 0px 24px #000000;
 }
 
-.login-form.active {
-  /* Estilos cuando el formulario de inicio de sesión o registro está activo */
-  display: block;
+.screen__content {
+  z-index: 1;
+  position: relative;  
+  height: 100%;
 }
 
-.subtitulo {
-  font-size: 1.5em; /* Tamaño de fuente más grande para el subtitulo */
+.screen__background {    
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  -webkit-clip-path: inset(0 0 0 0);
+  clip-path: inset(0 0 0 0);  
 }
 
-.boton-iniciar,
-.boton-registrarse {
-  /* Estilos para los botones */
-  padding: 12px 24px; /* Espaciado interno */
-  font-size: 16px;
-  background-color: #007bff; /* Color de fondo */
-  color: white; /* Color de texto */
-  border: none; /* Sin borde */
-  border-radius: 5px; /* Bordes redondeados */
-  cursor: pointer; /* Cursor de puntero */
-  transition: background-color 0.3s; /* Transición de color de fondo */
+.screen__background__shape {
+  transform: rotate(45deg);
+  position: absolute;
 }
 
-.boton-iniciar:hover,
-.boton-registrarse:hover {
-  /* Estilos cuando se pasa el mouse sobre los botones */
-  background-color: #0056b3; /* Color de fondo más oscuro */
+.screen__background__shape1 {
+  height: 520px;
+  width: 520px;
+  background: #FFF;  
+  top: -50px;
+  right: 120px;  
+  border-radius: 0 72px 0 0;
 }
 
-.espacio {
-  /* Espacio entre los botones */
-  margin-right: 10px;
+.screen__background__shape2 {
+  height: 220px;
+  width: 220px;
+  background: #e75906;  
+  top: -172px;
+  right: 0;  
+  border-radius: 32px;
 }
-input[type="email"],
-input[type="password"],
-input[type="text"] {
-  width: 50%;
+
+.screen__background__shape3 {
+  height: 540px;
+  width: 190px;
+  background: linear-gradient(270deg, #df4305, #e75906);
+  top: -24px;
+  right: 0;  
+  border-radius: 32px;
+}
+
+.screen__background__shape4 {
+  height: 400px;
+  width: 200px;
+  background: linear-gradient(270deg, #df4305, #e75906);
+  top: 420px;
+  right: 50px;  
+  border-radius: 60px;
+}
+
+.login {
+  width: 320px;
+  padding: 30px;
+  padding-top: 156px;
+}
+
+.login__field {
+  padding: 20px 0px;  
+  position: relative;  
+}
+
+.login__icon {
+  position: absolute;
+  top: 30px;
+  color: #df4f0c;
+}
+
+.login__input {
+  border: none;
+  border-bottom: 2px solid #e23b12;
+  background: none;
   padding: 10px;
-  margin-bottom: 15px; /* Espaciado inferior entre inputs */
-  border: 1px solid #ced4da; /* Borde suave */
-  border-radius: 5px;
-  box-sizing: border-box; /* Incluir el padding en el ancho */
+  padding-left: 24px;
+  font-weight: 700;
+  width: 75%;
+  transition: .2s;
 }
 
+.login__input:active,
+.login__input:focus,
+.login__input:hover {
+  outline: none;
+  border-bottom-color: #e94d0f;
+}
+
+.login__submit {
+  background: #fff;
+  font-size: 14px;
+  margin-top: 30px;
+  padding: 16px 20px;
+  border-radius: 26px;
+  border: 1px solid #D4D3E8;
+  text-transform: uppercase;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  color: #eb5013;
+  box-shadow: 0px 2px 2px #832b08;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.login__submit:active,
+.login__submit:focus,
+.login__submit:hover {
+  border-color: #92310a;
+  outline: none;
+}
+
+.button__icon {
+  font-size: 24px;
+  margin-left: auto;
+  color: #e64514;
+}
+
+.social-login {  
+  position: absolute;
+  height: 140px;
+  width: 160px;
+  text-align: center;
+  bottom: 0px;
+  right: 0px;
+  color: #fff;
+}
+
+.social-icons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.social-login__icon {
+  padding: 20px 10px;
+  color: #fff;
+  text-decoration: none;  
+  text-shadow: 0px 0px 8px #7875B5;
+}
+
+.social-login__icon:hover {
+  transform: scale(1.5);  
+}
 </style>

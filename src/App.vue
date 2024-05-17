@@ -18,10 +18,22 @@ export default {
 
 <style>
 html,body {
-  height: 99%;
-  background-color:rgb(255, 114, 6);
+  height: 100%;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings: "YOPQ" 300;
+  background-color:#ff5900 ;
+  margin: 0;
+  padding: 0;
   background-repeat: no-repeat;
-  background-size: cover; /* La imagen de fondo se ajustará para cubrir completamente el área del fondo */
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  background-size: cover; 
+  font-family: "Kumbh Sans", sans-serif;
 }
+
+#app {
+  max-width: auto;
+  margin: 0 auto;
+  text-align: center;
+}
+
 </style>

@@ -1,96 +1,104 @@
 <template>
-    <div>
+  <div class="container">
+    <div class="materias-container">
       <!-- Sección de Selección de Materias -->
-      <div v-if="currentSection === 'seleccion'">
+      <div v-if="currentSection === 'seleccion'" class="section seleccion">
         <h2>Selecciona tus materias cursadas</h2>
-        <div v-for="course in allCourses" :key="course.id">
-          <label>
-            <input type="checkbox" v-model="selectedCourseIds" :value="course.id">
-            {{ course.name }}
-          </label>
+        <div class="courses-list">
+          <div v-for="course in allCourses" :key="course.id" class="course-item">
+            <label>
+              <input type="checkbox" v-model="selectedCourseIds" :value="course.id">
+              {{ course.name }}
+            </label>
+          </div>
         </div>
-        <button @click="proceedToDragDrop">Continuar</button>
-      </div>
-  
-      <!-- Sección de Arrastrar y Soltar -->
-      <div v-if="currentSection === 'dragdrop'">
-        <h2>Organiza tu plan de estudio</h2>
-        <DragAndDrop :remainingCourses="remainingStack" :selectedCourses="cursadasStack" @updateCourses="updateCourses" />
-        <button @click="goToSection('seleccion')">Regresar a la Selección de Materias</button>
-        <button @click="goToSection('cursadas')">Ver Materias Cursadas</button>
-      </div>
-  
-      <!-- Sección de Materias Cursadas -->
-      <div v-if="currentSection === 'cursadas'">
-        <h2>Materias Cursadas</h2>
-        <ul>
-          <li v-for="course in cursadasStack" :key="course.id">
-            {{ course.name }}
-            <button @click="removeCursada(course)">Remover de Cursadas</button>
-          </li>
-        </ul>
-        <button @click="goToSection('dragdrop')">Regresar al Plan de Estudio</button>
+        <button class="btn btn-primary" @click="proceedToTopsort">Continuar</button>
       </div>
     </div>
-  </template>
-  
-  <script>
-  import DragAndDrop from './dragAndDrop.vue';
-  
-  export default {
-    components: {
-      DragAndDrop,
-    },
-    data() {
-      return {
-        allCourses: [
-          { id: 1, name: 'Algoritmos y Programación', type: 'bloque-profesional', credits: 4.5, prerequisites: [] },
-          { id: 2, name: 'Programación Orientada a Objetos', type: 'bloque-profesional', credits: 4.5, prerequisites: ['Algoritmos y Programación'] },
-          { id: 3, name: 'Estructura de Datos', type: 'bloque-profesional', credits: 4.5, prerequisites: ['Programación Orientada a Objetos'] },
-          { id: 5, name: 'Habilidades de Emprendimiento', type: 'bloque-interdisciplinario', credits: 6, prerequisites: [] },
-          { id: 6, name: 'Emprendimiento e Innovación', type: 'bloque-interdisciplinario', credits: 6, prerequisites: ['Habilidades de Emprendimiento'] },
-          { id: 7, name: 'Responsabilidad Social', type: 'bloque-interdisciplinario', credits: 6, prerequisites: ['Emprendimiento e Innovación'] },
-        ],
-        selectedCourseIds: [],
-        cursadasStack: [],
-        remainingStack: [],
-        currentSection: 'seleccion',
-      };
-    },
-    methods: {
-      proceedToDragDrop() {
-        const selectedCourses = this.allCourses.filter(course => this.selectedCourseIds.includes(course.id));
-        const unselectedCourses = this.allCourses.filter(course => !this.selectedCourseIds.includes(course.id));
-  
-        this.cursadasStack = selectedCourses;
-        this.remainingStack = unselectedCourses;
-  
-        this.currentSection = 'dragdrop';
-      },
-      updateCourses({ remainingCourses, selectedCourses }) {
-        this.remainingStack = remainingCourses;
-        this.cursadasStack = selectedCourses;
-      },
-      goToSection(section) {
-        this.currentSection = section;
-      },
-      removeCursada(course) {
-        const index = this.cursadasStack.findIndex(c => c.id === course.id);
-        if (index !== -1) {
-          this.cursadasStack.splice(index, 1);
-          this.remainingStack.push(course);
-        }
-      }
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      allCourses: [
+        { id: 1, name: 'Algoritmos y Programación', type: 'bloque-profesional', credits: 4.5, prerequisites: [] },
+        { id: 2, name: 'Programación Orientada a Objetos', type: 'bloque-profesional', credits: 4.5, prerequisites: ['Algoritmos y Programación'] },
+        { id: 3, name: 'Estructura de Datos', type: 'bloque-profesional', credits: 4.5, prerequisites: ['Programación Orientada a Objetos'] },
+        { id: 5, name: 'Habilidades de Emprendimiento', type: 'bloque-interdisciplinario', credits: 6, prerequisites: [] },
+        { id: 6, name: 'Emprendimiento e Innovación', type: 'bloque-interdisciplinario', credits: 6, prerequisites: ['Habilidades de Emprendimiento'] },
+        { id: 7, name: 'Responsabilidad Social', type: 'bloque-interdisciplinario', credits: 6, prerequisites: ['Emprendimiento e Innovación'] },
+      ],
+      selectedCourseIds: [],
+      currentSection: 'seleccion',
+    };
+  },
+  methods: {
+    proceedToTopsort() {
+      const selectedCourses = this.allCourses.filter(course => this.selectedCourseIds.includes(course.id));
+      this.$emit('selected-courses', selectedCourses);
+      this.$router.push('/topsort');
     }
-  };
-  </script>
-  
-  <style>
-  .draggable-item {
-    cursor: grab;
-    padding: 8px;
-    margin-bottom: 4px;
-    background-color: #f0f0f0;
   }
-  </style>  
-  
+};
+</script>
+
+<style scoped>
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.materias-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.section {
+  margin-bottom: 20px;
+}
+
+.h2 {
+  margin-bottom: 20px;
+}
+
+.courses-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.course-item {
+  flex: 1 1 45%;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: 0.3s ease;
+}
+
+.course-item:hover {
+  transform: scale(1.1);
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: #fff;
+}
+</style>

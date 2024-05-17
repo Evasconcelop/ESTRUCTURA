@@ -6,6 +6,7 @@
       <p class="descripcion">Aquí podrás ver tu progreso en la carrera y realizar otras acciones.</p>
       <div class="botones-principales">
         <button class="boton-seleccionar" @click="redirectToSubjects">Seleccionar materias</button>
+        <button class="boton-selecionar" @click="redirectToChat">preguntas frecuentes</button>
       </div>
     </div>
 
@@ -114,6 +115,11 @@ export default {
     redirectToSubjects() {
       this.$router.push('/materias'); 
     },
+
+    redirectToChat() {
+      this.$router.push('/chatbot'); 
+    },
+
     agregarComentario() {
       if (this.nuevoComentario.trim() !== '') {
         this.pilaComentarios.agregarComentario(this.nuevoComentario);
@@ -160,24 +166,28 @@ export default {
 .titulo {
   font-size: 40px;
   margin-bottom: 20px;
-  color: white; /* Cambio de color a blanco */
+  color: white; 
+  
 }
 
 .descripcion {
-  color: white; /* Cambio de color a blanco */
+  color: white; 
 }
 
 button {
   padding: 10px 20px;
-  background-color: #ff5900;
+  background-color: #492b1b;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.541);
+  transition: 0.3s ease;
+  margin-left: 10px;
 }
 
 button:hover {
-  background-color: #ff5900;
+  background-color: #000000;
 }
 
 .botones-principales {
@@ -243,7 +253,7 @@ button:hover {
 }
 
 .botones-container button:hover {
-  background-color: #0056b3;
+  background-color: #000000;
 }
 
 label {

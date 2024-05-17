@@ -1,5 +1,6 @@
 <template>
     <div class="flex">
+        <topsort @selected-courses="handleSelectedCourses" />
         <!-- Contenedor para las fichas arrastradas -->
         <div class="column-container">
         <div class="column" v-for="(column, columnIndex) in columns" :key="columnIndex" @dragover.prevent
@@ -314,12 +315,13 @@ export default {
     padding: 20px;
     background-color: #f9f9f9;
     border: 1px solid #ffffff;
-    margin-right: 20px;
+    margin-right: 30px;
     margin-top: 10px;
     border-radius: 10px;
     height: 500px;
     box-shadow: 0 5px 5px rgba(0, 0, 0, 0.541);
     animation: slideIn 0.5s ease forwards;
+    
 }
 
 .column-container {
@@ -327,6 +329,7 @@ export default {
     white-space: nowrap;
     display: flex;
     animation: slideIn 0.5s ease forwards;
+    margin-left: 10px;
 }
 
 

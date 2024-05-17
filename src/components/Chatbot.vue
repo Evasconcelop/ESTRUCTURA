@@ -1,4 +1,5 @@
 <template>
+  <div class="container">
     <div class="chatbot-container">
       <h1>Leoncito Chat</h1>
       <div class="chatbox">
@@ -7,6 +8,7 @@
         <button @click="procesarRespuesta">Enviar</button>
       </div>
     </div>
+  </div>
   </template>
 
 <script>
@@ -96,16 +98,31 @@ export default {
 </script>
 
 <style scoped>
+
+
+.container{
+  display: flex;
+  justify-content: center; 
+  align-items: center;     
+  height: 100vh;          
+  margin: 0;   
+}
+
+
 .chatbot-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 400px;
+  width: 600px;
+  height: 500px;
   margin: 0 auto;
   padding: 20px;
   background-color: #f8f9fa;
   border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 10px rgba(0, 5, 2, 1.5);
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
 }
 
 h1 {
